@@ -27,7 +27,7 @@ module Object_Scanner (
 
     // 거리 허용 오차 (이 픽셀 수 이내에 같은 색이 있으면 같은 객체로 묶음)
     localparam MARGIN = 5;
-    localparam FRAME_ACTION = 8'hff;
+    localparam FRAME_ACTION = 8'h7E;  // 0111 1110
 
     logic [5:0] r6, g6, b6;
     logic [5:0] max_c, min_c;
