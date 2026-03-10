@@ -95,9 +95,11 @@ module tb_target_select;
         begin
             @(posedge clk);
             bunker_detected = 1;
-
+            data_done       = 1;
             @(posedge clk);
             bunker_detected = 0;
+            data_done       = 0;
+            repeat (10) @(posedge clk);
         end
     endtask
 
