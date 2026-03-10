@@ -43,7 +43,8 @@ module SCCB (
         REGISTER_DATA_WAIT3,
         REGISTER_DATA_WAIT4,
         STOP1,
-        STOP2
+        STOP2,
+        WAIT
     } STATE;
 
     STATE cur_state;
@@ -54,7 +55,7 @@ module SCCB (
 
     logic [2:0] cur_bit_cnt, next_bit_cnt;
 
-    logic [$clog2(100_000)-1:0] cur_clk_cnt, next_clk_cnt;
+    logic [19:0] cur_clk_cnt, next_clk_cnt;
 
     logic [7:0] cur_tx_data, next_tx_data;
 
@@ -467,14 +468,31 @@ module SCCB (
                 next_sda = 1;
                 if (cur_clk_cnt == 499) begin
                     next_clk_cnt = 0;
-                    tx_done = 1;
-                    next_state = IDLE;
-
+                    if (reg_addr == 8'h12 && reg_data == 8'h80) begin
+                        next_state = WAIT;
+                    end else begin
+                        tx_done    = 1;
+                        next_state = IDLE;
+                    end
                 end else begin
                     next_clk_cnt = cur_clk_cnt + 1;
                 end
             end
 
+
+            WAIT: begin
+                next_scl = 1;
+                next_sda = 1;
+
+                if (cur_clk_cnt >= 500_000) begin
+                    next_clk_cnt = 0;
+                    tx_done = 1;
+                    next_state = IDLE;
+                end else begin
+                    next_clk_cnt = cur_clk_cnt + 1;
+                end
+
+            end
 
         endcase
 
