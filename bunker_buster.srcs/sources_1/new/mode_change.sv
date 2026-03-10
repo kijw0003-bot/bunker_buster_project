@@ -3,6 +3,13 @@
 
 
 module mode_change (
-    input logic sw
+    input  logic reset,
+    input  logic mode_btn,
+    output logic mux_sel
+    //  output logic 
 );
+
+
+
+
 endmodule

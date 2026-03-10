@@ -9,6 +9,7 @@ module top_VGA_OV7670 (
     input  logic       href,
     input  logic       vsync,
     input  logic [7:0] data,
+    input  logic       mode_btn,
     // vga port side
     output logic       h_sync,
     output logic       v_sync,
@@ -53,6 +54,11 @@ module top_VGA_OV7670 (
     logic [7:0] hint_pc_rx_data;
     logic       hint_pc_rx_done;
 
+    logic       hint_tx_fifo_empty;
+    logic [7:0] hint_pc_tx_fifo_rdata;
+    logic       hint_tx_busy;
+
+    logic       o_mode_btn;
 
     clk_wiz_0 instance_name (
         // Clock out ports
@@ -64,6 +70,14 @@ module top_VGA_OV7670 (
         // Clock in ports
         .clk_in1 (clk)    // input clk_in1
     );
+
+    btn_debouncer u_btn_debouncer (
+        .clk  (clk),
+        .reset(reset),
+        .i_btn(mode_btn),
+        .o_btn(o_mode_btn)
+    );
+
 
     VGA_Decoder u_VGA_Decoder (
         .clk    (clk_100m),
@@ -207,9 +221,6 @@ module top_VGA_OV7670 (
         .y  (hint_pc_tx_mux_out)
     );
 
-    logic hint_tx_fifo_empty;
-    logic [7:0] hint_pc_tx_fifo_rdata;
-    logic hint_tx_busy;
 
     FIFO u_hint_pc_tx_fifo (
         .clk  (clk_100m),
