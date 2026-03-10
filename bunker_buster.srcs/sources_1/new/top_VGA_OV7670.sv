@@ -15,7 +15,8 @@ module top_VGA_OV7670 (
     output logic [3:0] port_red,
     output logic [3:0] port_green,
     output logic [3:0] port_blue,
-
+    output logic       scl,
+    inout  wire        sda,
 
     // board -> 힌트 PC Tx
     input  logic RsRx_hint,
@@ -106,6 +107,18 @@ module top_VGA_OV7670 (
         .wAddr(wAddr),
         .wData(wData)
     );
+    // ----------------------------------------------------
+    // ----------SCCB 동작 module---------------------------
+    // ----------------------------------------------------
+    SCCB_TOP u_SCCB_TOP (
+        .clk  (clk_100m),
+        .reset(reset),
+        .scl  (scl),
+        .sda  (sda)
+    );
+
+    // ----------------------------------------------------
+    // ----------------------------------------------------
 
     // 카메라 Object Scaning 및 힌트 기반 타겟 지정
     Object_Scanner u_Object_Scanner (
