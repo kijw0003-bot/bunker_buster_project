@@ -15,6 +15,7 @@
 *.runs/
 *.sim/
 .Xil/
+*.xpr
 
 # simulation
 xsim.dir/
