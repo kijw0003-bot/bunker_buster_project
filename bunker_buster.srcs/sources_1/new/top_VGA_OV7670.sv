@@ -9,6 +9,7 @@ module top_VGA_OV7670 (
     input  logic       href,
     input  logic       vsync,
     input  logic [7:0] data,
+    input  logic       mode_btn,    // btnU
     // vga port side
     output logic       h_sync,
     output logic       v_sync,
@@ -38,7 +39,8 @@ module top_VGA_OV7670 (
     logic [               15:0] wData;
     logic [               15:0] rData;
     logic w_tx_empty, w_tx_rdata;
-    logic [7:0] tx_fifo_mux_out;
+
+
 
     logic [7:0] hint_data;
     logic [3:0] hint_count;
@@ -46,13 +48,26 @@ module top_VGA_OV7670 (
     logic       frame_done;
     logic [7:0] target_data;
     logic       bunker_detected;
-    logic [7:0] hint_pc_tx_mux_out;
+
+    logic [7:0] ui_pc_mux_out1;
+    logic [7:0] ui_pc_mux_out2;
+
+    logic [7:0] hint_pc_tx_mux_out1;
+    logic [7:0] hint_pc_tx_mux_out2;
 
     logic [7:0] UI_pc_rx_data;
     logic       UI_pc_rx_done;
     logic [7:0] hint_pc_rx_data;
     logic       hint_pc_rx_done;
 
+    logic       hint_tx_fifo_empty;
+    logic [7:0] hint_pc_tx_fifo_rdata;
+    logic       hint_tx_busy;
+
+    logic o_mode_btn, game_mode;
+
+    logic [7:0] btn_send_data;
+    assign btn_send_data = 8'hFA;
 
     clk_wiz_0 instance_name (
         // Clock out ports
@@ -64,6 +79,23 @@ module top_VGA_OV7670 (
         // Clock in ports
         .clk_in1 (clk)    // input clk_in1
     );
+
+    // ==================== 모드 변경 =========================
+    btn_debouncer u_btn_debouncer (
+        .clk  (clk_100m),
+        .reset(reset),
+        .i_btn(mode_btn),
+        .o_btn(o_mode_btn)
+    );
+
+    mode_change u_mode_change (
+        .clk(clk_100m),
+        .reset(reset),
+        .mode_btn(o_mode_btn),
+        .game_mode(game_mode)
+    );
+
+    // ======================================================
 
     VGA_Decoder u_VGA_Decoder (
         .clk    (clk_100m),
@@ -151,21 +183,31 @@ module top_VGA_OV7670 (
     // ----------Board -> UI PC 출력 tx 부분----------------
     // ----------------------------------------------------
 
+
     mux_nx1 #(
         .NUM  (2),
         .WIDTH(8)
-    ) tx_fifo_src_mux (
+    ) tx_fifo_src_mux1 (
         .sel(frame_done),
         .x  ({hint_data, target_data}),
-        .y  (tx_fifo_mux_out)
+        .y  (ui_pc_mux_out1)
+    );
+
+    mux_nx1 #(
+        .NUM  (2),
+        .WIDTH(8)
+    ) tx_fifo_src_mux2 (
+        .sel(o_mode_btn),
+        .x  ({ui_pc_mux_out1, btn_send_data}),  // 8'hFA 는 바뀔 수 있음
+        .y  (ui_pc_mux_out2)
     );
 
     FIFO u_UI_PCtx_fifo (
         .clk  (clk_100m),
         .reset(reset),
-        .wr   (data_done|frame_done),
+        .wr   (data_done|frame_done|o_mode_btn),
         .rd   (~w_tx_busy),
-        .wdata(tx_fifo_mux_out),
+        .wdata(ui_pc_mux_out2),
         .rdata(w_tx_rdata),
         .full (),
         .empty(w_tx_empty)
@@ -201,22 +243,28 @@ module top_VGA_OV7670 (
     mux_nx1 #(
         .NUM  (2),
         .WIDTH(8)
-    ) PC_tx_fifo_src_mux (
+    ) PC_tx_fifo_src_mux1 (
         .sel(frame_done),
         .x  ({hint_data, target_data}),
-        .y  (hint_pc_tx_mux_out)
+        .y  (hint_pc_tx_mux_out1)
     );
 
-    logic hint_tx_fifo_empty;
-    logic [7:0] hint_pc_tx_fifo_rdata;
-    logic hint_tx_busy;
+    mux_nx1 #(
+        .NUM  (2),
+        .WIDTH(8)
+    ) PC_tx_fifo_src_mux2 (
+        .sel(o_mode_btn),
+        .x  ({hint_pc_tx_mux_out1, btn_send_data}),
+        .y  (hint_pc_tx_mux_out2)
+    );
+
 
     FIFO u_hint_pc_tx_fifo (
         .clk  (clk_100m),
         .reset(reset),
-        .wr   (bunker_detected|frame_done),
+        .wr   (bunker_detected|frame_done|o_mode_btn),
         .rd   (~hint_tx_busy),
-        .wdata(hint_pc_tx_mux_out),
+        .wdata(hint_pc_tx_mux_out2),
         .rdata(hint_pc_tx_fifo_rdata),
         .full (),
         .empty(hint_tx_fifo_empty)
