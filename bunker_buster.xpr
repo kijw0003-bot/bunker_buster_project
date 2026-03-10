@@ -199,13 +199,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/mode_change.sv">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/new/mux_nx1.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -252,6 +245,14 @@
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../260305_VGA_OV7670/260305_VGA_OV7670.srcs/sources_1/new/top_VGA_OV7670.sv"/>
           <Attr Name="ImportTime" Val="1773015252"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/mode_change.sv">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>

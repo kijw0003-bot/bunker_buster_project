@@ -1,5 +1,10 @@
 `timescale 1ns / 1ps
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> feat/mode
 module mode_change (
     input  logic clk,
     input  logic reset,
