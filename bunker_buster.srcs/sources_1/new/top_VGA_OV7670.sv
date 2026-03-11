@@ -41,8 +41,6 @@ module top_VGA_OV7670 (
     logic [                7:0] w_tx_rdata;
     logic                       w_tx_empty;
 
-
-
     logic [                7:0] hint_data;
     logic [                3:0] hint_count;
     logic                       data_done;
@@ -69,7 +67,6 @@ module top_VGA_OV7670 (
 
     logic [7:0] btn_send_data;
     assign btn_send_data = 8'hDD;
-
 
 
     clk_wiz_0 instance_name (
