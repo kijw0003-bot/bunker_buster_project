@@ -14,8 +14,8 @@
 *.ip_user_files/
 *.runs/
 *.sim/
-.Xil/
 *.xpr
+.Xil/
 
 # simulation
 xsim.dir/

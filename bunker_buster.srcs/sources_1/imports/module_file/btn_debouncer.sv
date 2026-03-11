@@ -9,7 +9,8 @@ module btn_debouncer (
 
     // clock divider 
     // 100MHz -> 100kHz
-    parameter FCOUNT = 100_000_000 / 100_000;
+    // parameter FCOUNT = 100_000_000 / 100_000;
+    parameter FCOUNT = 100_000_000 / 100_000_00;  // Simulation 용
     logic [$clog2(FCOUNT)-1:0] counter_100kHz;
     logic r_clock_100kHz;
 

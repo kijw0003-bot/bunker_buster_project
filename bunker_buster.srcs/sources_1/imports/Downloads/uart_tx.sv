@@ -17,7 +17,7 @@ module uart_tx #(
     parameter S_DATA_8BITS = 2'b10;
     parameter S_STOP_BIT = 2'b11;
 
-    parameter DIVIDER_CNT = 25_000_000 / BPS;
+    parameter DIVIDER_CNT = 100_000_000 / BPS;
 
     reg [1:0] r_state;  // state transition 
     reg [3:0] r_bit_cnt;  // 전송 bit count 
