@@ -64,6 +64,7 @@ module top_VGA_OV7670 (
     logic                       hint_tx_busy;
 
     logic o_mode_btn, game_mode;
+    logic camera_start;
 
     logic [7:0] btn_send_data;
     assign btn_send_data = 8'hDD;
@@ -93,6 +94,19 @@ module top_VGA_OV7670 (
         .reset(reset),
         .mode_btn(o_mode_btn),
         .game_mode(game_mode)
+    );
+
+    receive_done_signal u_receive_done_signal (
+        .clk            (clk_100m),
+        .reset          (reset),
+        .game_mode      (game_mode),
+        .bunker_detected(bunker_detected),
+        .UI_pc_rx_data  (UI_pc_rx_data),
+        .UI_pc_rx_done  (UI_pc_rx_done),
+        .hint_pc_rx_data(hint_pc_rx_data),
+        .hint_pc_rx_done(hint_pc_rx_done),
+        .frame_done     (frame_done),
+        .camera_start   (camera_start)
     );
 
     // ======================================================
@@ -166,6 +180,7 @@ module top_VGA_OV7670 (
         .data_done(data_done),  // 1 tick (데이터 1개 완성 트리거)
         .frame_done(frame_done),  // 1 tick (1프레임 완료 트리거)
         .bunker_detected(bunker_detected)
+        //  camera_start 포함 시켜야함
     );
 
     target_select u_target_select (
