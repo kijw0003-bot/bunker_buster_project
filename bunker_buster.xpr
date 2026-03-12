@@ -172,15 +172,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/sources_1/new/VGA_Img_Rom.sv">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../260304_VGA_Lenna/260304_VGA_Lenna.srcs/sources_1/new/VGA_Img_Rom.sv"/>
-          <Attr Name="ImportTime" Val="1772623406"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/imports/module_file/btn_debouncer.sv">
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../module_file/btn_debouncer.sv"/>
@@ -194,15 +185,6 @@
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../260305_VGA_OV7670/260305_VGA_OV7670.srcs/sources_1/new/frameBuffer.sv"/>
           <Attr Name="ImportTime" Val="1772777313"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/sources_1/new/gray_scale_filter.sv">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../260304_VGA_Lenna/260304_VGA_Lenna.srcs/sources_1/new/gray_scale_filter.sv"/>
-          <Attr Name="ImportTime" Val="1772623698"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -231,6 +213,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/sources_1/new/receive_done_signal.sv">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/new/define.vh">
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../260305_VGA_OV7670/260305_VGA_OV7670.srcs/sources_1/new/define.vh"/>
@@ -242,15 +231,6 @@
       <File Path="$PSRCDIR/sources_1/new/target_select.sv">
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../260305_VGA_OV7670/260305_VGA_OV7670.srcs/sources_1/new/target_select.sv"/>
-          <Attr Name="ImportTime" Val="1773015252"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/new/top_VGA_OV7670.sv">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../260305_VGA_OV7670/260305_VGA_OV7670.srcs/sources_1/new/top_VGA_OV7670.sv"/>
           <Attr Name="ImportTime" Val="1773015252"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -275,9 +255,38 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/receive_done_signal.sv">
+      <File Path="$PSRCDIR/sources_1/new/top_VGA_OV7670.sv">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../260305_VGA_OV7670/260305_VGA_OV7670.srcs/sources_1/new/top_VGA_OV7670.sv"/>
+          <Attr Name="ImportTime" Val="1773015252"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/HSV.sv">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources_1/new/VGA_Img_Rom.sv">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../260304_VGA_Lenna/260304_VGA_Lenna.srcs/sources_1/new/VGA_Img_Rom.sv"/>
+          <Attr Name="ImportTime" Val="1772623406"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources_1/new/gray_scale_filter.sv">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../260304_VGA_Lenna/260304_VGA_Lenna.srcs/sources_1/new/gray_scale_filter.sv"/>
+          <Attr Name="ImportTime" Val="1772623698"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -307,6 +316,7 @@
       <Filter Type="Srcs"/>
       <File Path="$PSRCDIR/sim_1/new/tb_Object_Scanner.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -314,6 +324,7 @@
       </File>
       <File Path="$PSRCDIR/sim_1/new/tb_select_target.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -321,6 +332,7 @@
       </File>
       <File Path="$PSRCDIR/sim_1/new/tb_send_uart2hintpc.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
