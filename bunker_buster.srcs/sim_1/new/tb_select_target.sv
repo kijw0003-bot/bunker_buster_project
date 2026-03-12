@@ -127,7 +127,7 @@ module tb_target_select;
         send_hint(`TRIANGLE, `BLUE, `SECTION_8);
 
         // yellow circle at section 12
-        send_hint(`CIRCLE, `YELLOW, `SECTION_12);
+        send_hint(`CIRCLE, `RED, `SECTION_12);
 
         //-------------------------------------------------
         // bunker detection

@@ -1,10 +1,12 @@
 `define SQUARE 2'd0
 `define TRIANGLE 2'd1
 `define CIRCLE 2'd2
+`define SHAPE_ERR 2'd3
 
 `define RED 2'd0
 `define GREEN 2'd1
 `define BLUE 2'd2
+
 
 `define SECTION_0 4'd0
 `define SECTION_1 4'd1

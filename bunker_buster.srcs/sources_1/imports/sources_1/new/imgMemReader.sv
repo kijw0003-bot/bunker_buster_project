@@ -9,12 +9,13 @@ module imgMemReader (
     output logic [                3:0] port_blue
 );
 
-    logic qvga_de;
-    assign qvga_de = DE && (x_pixel < 320) && (y_pixel < 240);
+    // logic qvga_de;
+    // assign qvga_de = DE && (x_pixel < 320) && (y_pixel < 240);
 
-    assign addr = DE ? (320 * y_pixel + x_pixel) : 'bz;
+    // assign addr = DE ? (320 * y_pixel + x_pixel) : 'bz;
+    assign addr = DE ? (320 * y_pixel[9:1] + x_pixel[9:1]) : 'bz;
 
-    assign {port_red, port_green, port_blue} = qvga_de? {
+    assign {port_red, port_green, port_blue} = DE? {
         imgData[15:12], imgData[10:7], imgData[4:1]
     } : 'b0;
 endmodule
