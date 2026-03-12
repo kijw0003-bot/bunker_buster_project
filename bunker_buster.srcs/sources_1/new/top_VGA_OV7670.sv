@@ -65,6 +65,7 @@ module top_VGA_OV7670 (
 
     logic o_mode_btn, game_mode;
     logic camera_start;
+    logic game_ing;
 
     logic [7:0] btn_send_data;
     assign btn_send_data = 8'hDD;
@@ -217,14 +218,14 @@ module top_VGA_OV7670 (
         .y  (ui_pc_mux_out2)
     );
 
-    FIFO u_UI_PCtx_fifo (
-        .clk  (clk_100m),
+    FIFO u_UI_PC_tx_fifo (
+        .clk(clk_100m),
         .reset(reset),
-        .wr   (data_done| frame_done|second_btn_tick),
-        .rd   (~w_tx_busy),
+        .wr   ((game_ing && bunker_detected)|data_done| frame_done|second_btn_tick),
+        .rd(~w_tx_busy),
         .wdata(ui_pc_mux_out2),
         .rdata(w_tx_rdata),
-        .full (),
+        .full(),
         .empty(w_tx_empty)
     );
 
@@ -277,7 +278,7 @@ module top_VGA_OV7670 (
     FIFO u_hint_pc_tx_fifo (
         .clk  (clk_100m),
         .reset(reset),
-        .wr   (bunker_detected|frame_done|second_btn_tick),
+        .wr   ((~game_ing && bunker_detected)|frame_done|second_btn_tick),
         .rd   (~hint_tx_busy),
         .wdata(hint_pc_tx_mux_out2),
         .rdata(hint_pc_tx_fifo_rdata),

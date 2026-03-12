@@ -23,7 +23,7 @@ xsim.dir/
 # logs
 *.log
 *.jou
-*.pb
+*.pb 
 *.wdb
 
 

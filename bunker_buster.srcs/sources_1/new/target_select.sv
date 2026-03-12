@@ -207,43 +207,38 @@ module target_select (
             end
 
             RECEIVE_DATA: begin
-                if (c_clk_count == 6 - 1) begin
-                    case (color)
-                        `GREEN:  distance = 1;
-                        `BLUE:   distance = 3;
-                        `YELLOW: distance = 4;
-                    endcase
+                case (color)
+                    `GREEN:  distance = 1;
+                    `BLUE:   distance = 3;
+                    `YELLOW: distance = 4;
+                endcase
 
-                    case (shape)
-                        `CIRCLE: begin
-                            for (int i = 0; i < 15; i++) begin
-                                if (manhattan(section, i) <= distance) begin
-                                    if (c_valid[i]) begin
-                                        n_score[i] = c_score[i] + 1;
-                                    end
-                                end else begin
-                                    n_valid[i] = 0;
+                case (shape)
+                    `CIRCLE: begin
+                        for (int i = 0; i < 15; i++) begin
+                            if (manhattan(section, i) <= distance) begin
+                                if (c_valid[i]) begin
+                                    n_score[i] = c_score[i] + 1;
                                 end
+                            end else begin
+                                n_valid[i] = 0;
                             end
                         end
-                        `TRIANGLE: begin
-                            for (int i = 0; i < 15; i++) begin
-                                if (manhattan(section, i) > distance) begin
-                                    if (c_valid[i]) begin
-                                        n_score[i] = c_score[i] + 1;
-                                    end
-                                end else begin
-                                    n_valid[i] = 0;
+                    end
+                    `TRIANGLE: begin
+                        for (int i = 0; i < 15; i++) begin
+                            if (manhattan(section, i) > distance) begin
+                                if (c_valid[i]) begin
+                                    n_score[i] = c_score[i] + 1;
                                 end
+                            end else begin
+                                n_valid[i] = 0;
                             end
-
                         end
-                    endcase
-                    n_state = IDLE;
-                    n_clk_count = 0;
-                end else begin
-                    n_clk_count = n_clk_count + 1;
-                end
+
+                    end
+                endcase
+                n_state = IDLE;
             end
         endcase
     end
