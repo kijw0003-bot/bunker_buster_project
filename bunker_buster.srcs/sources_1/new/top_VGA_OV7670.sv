@@ -23,9 +23,16 @@ module top_VGA_OV7670 (
     input  logic RsRx_hint,
     output logic RsTx_hint,
 
+
+    //-------------시뮬레이션 용----------------
+    output logic [9:0] debug_led,
+    //---------------------------------
+
     // board -> UI PC Tx
     input  logic RsRx_UI,
     output logic RsTx_UI
+
+
 );
 
     logic                       clk_100m;
@@ -69,6 +76,11 @@ module top_VGA_OV7670 (
 
     logic [7:0] btn_send_data;
     assign btn_send_data = 8'hDD;
+
+    logic DE_out;
+    logic [9:0] x_out;
+    logic [9:0] y_out;
+    logic [7:0] H, S, V;
 
 
     clk_wiz_0 instance_name (
@@ -168,20 +180,52 @@ module top_VGA_OV7670 (
     // ----------------------------------------------------
 
     // 카메라 Object Scaning 및 힌트 기반 타겟 지정
-    Object_Scanner u_Object_Scanner (
-        .pclk(pclk),  // 카메라 픽셀 클록 (25MHz)
-        .reset(reset),
-        .vsync(vsync),
-        .we(we),
-        .wData(wData),
-        .rx_data(hint_pc_rx_data),
-        .rx_done(hint_pc_rx_done),
-        .hint_data(hint_data),  // [7:6]모양, [5:4]색상, [3:0]위치
-        .hint_count(hint_count),  // 검출된 총 객체 수
-        .data_done(data_done),  // 1 tick (데이터 1개 완성 트리거)
-        .frame_done(frame_done),  // 1 tick (1프레임 완료 트리거)
-        .bunker_detected(bunker_detected)
-        //  camera_start 포함 시켜야함
+    HSV_object_scanner #(
+        .P_S_MIN     (8'd200),
+        .P_V_MIN     (8'd100),
+        .P_H_RED_HI1 (8'd15),
+        .P_H_RED_LO2 (8'd230),
+        .P_H_GRN_LO  (8'd70),
+        .P_H_GRN_HI  (8'd130),
+        .P_H_BLU_LO  (8'd155),
+        .P_H_BLU_HI  (8'd200),
+        .P_DETECT_THR(16'd500),     // 노이즈 최소 임계
+        .P_THR_SQ    (16'd1500),    // 삼각형/사각형 경계
+        .P_THR_CI    (16'd3000),    // 사각형/원 경계
+        .P_RUN_THR   (3'd3),
+        .CLK_CNT_3S  (300_000_000)
+    ) U_HSV_object_scanner (
+        .clk            (rclk),
+        .reset          (reset),
+        .DE             (DE_out),
+        .x_pixel        (x_out),
+        .y_pixel        (y_out),
+        .H              (H),
+        .S              (S),
+        .V              (V),
+        .debug_led      (debug_led),
+        .hint_data      (hint_data),
+        .data_done      (data_done),
+        .bunker_detected(bunker_detected),
+        .frame_done     (frame_done),
+        .game_ing       (game_ing)
+    );
+
+    HSV U_HSV (
+        .clk   (rclk),
+        .reset (reset),
+        .DE_in (DE),
+        .x_in  (x_pixel),
+        .y_in  (y_pixel_pixel),
+        .R     (port_red),
+        .G     (port_green),
+        .B     (port_blue),
+        .DE_out(DE_out),
+        .x_out (x_out),
+        .y_out (y_out),
+        .H     (H),
+        .S     (S),
+        .V     (V)
     );
 
     target_select u_target_select (

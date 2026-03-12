@@ -208,9 +208,9 @@ module target_select (
 
             RECEIVE_DATA: begin
                 case (color)
-                    `GREEN:  distance = 1;
-                    `BLUE:   distance = 3;
-                    `YELLOW: distance = 4;
+                    `GREEN: distance = 1;
+                    `BLUE:  distance = 3;
+                    `RED:   distance = 4;
                 endcase
 
                 case (shape)

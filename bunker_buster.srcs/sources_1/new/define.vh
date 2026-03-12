@@ -1,6 +1,7 @@
 `define SQUARE 2'd0
 `define TRIANGLE 2'd1
 `define CIRCLE 2'd2
+`define SHAPE_ERR 2'd3
 
 `define RED 2'd0
 `define GREEN 2'd1

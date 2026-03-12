@@ -148,7 +148,7 @@ module tb_send_uart2hintpc;
 
         $display("CASE4 : MULTI HINT");
 
-        hint_data = {`CIRCLE, `YELLOW, `SECTION_14};
+        hint_data = {`CIRCLE, `RED, `SECTION_14};
 
         bunker_detected = 1;
         @(posedge clk);
