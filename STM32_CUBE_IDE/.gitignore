@@ -1,0 +1,26 @@
+
+
+# STM32CUBEIDE
+
+# Build output
+/Debug/
+/Release/
+/build/
+/out/
+
+# Object / binary files
+*.o
+*.elf
+*.bin
+*.hex
+*.map
+*.d
+
+# STM32CubeIDE / Eclipse
+.metadata/
+.settings/
+*.launch
+
+# Eclipse core files
+.project
+.cproject
