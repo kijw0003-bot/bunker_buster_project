@@ -11,7 +11,7 @@ module FIFO (
     output       empty
 );
 
-    wire [3:0] w_wptr, w_rptr;
+    wire [7:0] w_wptr, w_rptr;
 
     register_file u_register_file (
         .clk(clk),
@@ -37,14 +37,14 @@ endmodule
 
 module register_file (
     input            clk,
-    input      [3:0] waddr,
-    input      [3:0] raddr,
+    input      [7:0] waddr,
+    input      [7:0] raddr,
     input      [7:0] wdata,
    // input            rd,
     input            wr,
     output reg [7:0] rdata
 );
-    logic [7:0] register_file[0:15];
+    logic [7:0] register_file[0:255];
 
     always_ff @(posedge clk) begin
         if (wr) begin
@@ -65,14 +65,14 @@ module fifo_control_unit (
     input        reset,
     input        wr,
     input        rd,
-    output [3:0] w_ptr,
-    output [3:0] r_ptr,
+    output [7:0] w_ptr,
+    output [7:0] r_ptr,
     output       full,
     output       empty
 );
 
     logic c_full, n_full, c_empty, n_empty;
-    logic [3:0] c_wptr, n_wptr, c_rptr, n_rptr;
+    logic [7:0] c_wptr, n_wptr, c_rptr, n_rptr;
 
     assign full  = c_full;
     assign empty = c_empty;
@@ -84,8 +84,8 @@ module fifo_control_unit (
         if (reset) begin
             c_full  <= 1'b0;
             c_empty <= 1'b1;
-            c_wptr  <= 4'b0000;
-            c_rptr  <= 4'b0000;
+            c_wptr  <= 0;
+            c_rptr  <= 0;
         end else begin
             c_full  <= n_full;
             c_empty <= n_empty;
@@ -110,9 +110,9 @@ module fifo_control_unit (
             2'b01: begin  //POP
                 n_full = 1'b0;
                 if (!c_empty) begin
-                    n_rptr = c_rptr + 1'b1;
+                    n_rptr = c_rptr + 1;
                     if (n_rptr == c_wptr) begin
-                        n_empty = 1'b1;
+                        n_empty = 1;
                     end
                 end
             end
@@ -130,10 +130,10 @@ module fifo_control_unit (
             2'b11: begin  //PUSH/POP
                 if (c_empty) begin
                     n_empty = 1'b0;
-                    n_wptr  = c_wptr + 1'b1;
+                    n_wptr  = c_wptr + 1;
                 end else if (c_full) begin
                     n_full = 1'b0;
-                    n_rptr = c_rptr + 1'b1;
+                    n_rptr = c_rptr + 1;
                 end else begin
                     n_wptr = c_wptr + 1;
                     n_rptr = c_rptr + 1;

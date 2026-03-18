@@ -10,17 +10,14 @@ module VGA_Decoder (
     output logic [9:0] y_pixel,
     output logic       DE
 );
-
-
     // logic pclk;
-    logic [9:0] h_count;
-    logic [9:0] v_count;
+    logic [9:0] h_count, v_count;
 
-    pclk_gen U_PCLK_HEN (.*);
+    pclk_gen U_PCLK_GEN (.*);
 
-    pxl_counter U_PXL_COunter (.*);
+    pxl_counter U_PXL_Counter (.*);
 
-    vga_decoder U_VGA_Decoder (.*);
+    vga_decoder U_VAG_Decoder (.*);
 
 
 endmodule
@@ -45,7 +42,6 @@ module pclk_gen (
             end
         end
     end
-
 endmodule
 
 module pxl_counter (
@@ -55,9 +51,9 @@ module pxl_counter (
     output logic [9:0] h_count,
     output logic [9:0] v_count
 );
-
     localparam H_MAX = 800, V_MAX = 525;
 
+    // Horizontal 
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             h_count <= 0;
@@ -72,6 +68,7 @@ module pxl_counter (
         end
     end
 
+    // vertical
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             v_count <= 0;
@@ -79,7 +76,7 @@ module pxl_counter (
             if (pclk) begin
                 if (h_count == H_MAX - 1) begin
                     if (v_count == V_MAX - 1) begin
-                        v_count <= 0;
+                        v_count = 0;
                     end else begin
                         v_count <= v_count + 1;
                     end
@@ -87,7 +84,6 @@ module pxl_counter (
             end
         end
     end
-
 endmodule
 
 module vga_decoder (
@@ -103,23 +99,28 @@ module vga_decoder (
     localparam H_Visible_area = 640;
     localparam H_Front_porch = 16;
     localparam H_Sync_pulse = 96;
-    localparam H_Back_porch = 46;
+    localparam H_Back_porch = 48;
     localparam H_Whole_line = 800;
-
 
     localparam V_Visible_area = 480;
     localparam V_Front_porch = 10;
     localparam V_Sync_pulse = 2;
     localparam V_Back_porch = 33;
-    localparam V_Whole_line = 525;
+    localparam V_Whole_frame = 525;
 
     assign h_sync = !((h_count >= (H_Visible_area + H_Front_porch)) && 
-                     (h_count < (H_Visible_area + H_Front_porch+ H_Sync_pulse)));
+                    (h_count < (H_Visible_area + H_Front_porch + H_Sync_pulse)));
 
     assign v_sync = !((v_count >= (V_Visible_area + V_Front_porch)) && 
-                     (v_count < (V_Visible_area + V_Front_porch+ V_Sync_pulse)));
+                    (v_count < (V_Visible_area + V_Front_porch + V_Sync_pulse)));
 
     assign DE = (h_count < H_Visible_area) && (v_count < V_Visible_area);
+
     assign x_pixel = h_count;
     assign y_pixel = v_count;
+
 endmodule
+
+
+
+

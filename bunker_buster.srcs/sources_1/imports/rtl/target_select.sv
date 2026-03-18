@@ -6,10 +6,11 @@ module target_select (
     input  logic       reset,
     // 모양 식별 모듈과의 signals
     input  logic [7:0] hint_data,
-    input  logic [3:0] hint_count,
     input  logic       data_done,
     input  logic       frame_done,
     input  logic       bunker_detected,
+    input  logic       o_mode_btn,
+    input  logic       one_red_undetected,
     // 출력
     output logic [7:0] target_data
 );
@@ -128,14 +129,12 @@ module target_select (
     endfunction
 
     // wire, logic 추가
-    logic [1:0] color;
-    logic [1:0] shape;
+    logic [3:0] color;
     logic [3:0] section;
 
-    assign {shape, color, section} = hint_data;
 
-    logic [4:0] n_score[0:14];
-    logic [4:0] c_score[0:14];
+    logic [4:0] n_score [0:14];
+    logic [4:0] c_score [0:14];
     logic [4:0] c_max_score, n_max_score;
 
     logic [14:0] c_valid, n_valid;
@@ -143,8 +142,13 @@ module target_select (
 
     logic [3:0] c_max_index, n_max_index;
 
+    logic [1:0] c_hit_count[0:14];
+    logic [1:0] n_hit_count[0:14];
+
     logic [3:0] c_clk_count, n_clk_count;
-    logic [3:0] c_hint_count_reg, n_hint_count_reg;
+    logic [7:0] c_hint_data_reg, n_hint_data_reg;
+    assign {color, section} = c_hint_data_reg;
+
 
     assign target_data = {4'b1111, c_max_index};
 
@@ -157,25 +161,27 @@ module target_select (
 
     // 데이터 및 개수 초기화
     always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
+        if (reset || o_mode_btn) begin
             for (int i = 0; i < 15; i++) begin
-                c_score[i] <= 2;
+                c_score[i] <= 0;
                 c_valid[i] <= 1;
+                c_hit_count[i] <= 0;
             end
             c_max_score <= 16;
             c_max_index <= 0;
             c_clk_count <= 0;
-            c_hint_count_reg <= 0;
+            c_hint_data_reg <= 0;
             c_state <= IDLE;
         end else begin
             for (int i = 0; i < 15; i++) begin
                 c_score[i] <= n_score[i];
                 c_valid[i] <= n_valid[i];
+                c_hit_count[i] <= n_hit_count[i];
             end
             c_max_index <= n_max_index;
             c_max_score <= n_max_score;
             c_clk_count <= n_clk_count;
-            c_hint_count_reg <= n_hint_count_reg;
+            c_hint_data_reg <= n_hint_data_reg;
             c_state <= n_state;
         end
     end
@@ -185,36 +191,44 @@ module target_select (
         for (int i = 0; i < 15; i++) begin
             n_score[i] = c_score[i];
             n_valid[i] = c_valid[i];
+            n_hit_count[i] = c_hit_count[i];
         end
         n_state = c_state;
         distance = 0;
         n_clk_count = c_clk_count;
-        n_hint_count_reg = c_hint_count_reg;
+        n_hint_data_reg = c_hint_data_reg;
 
         case (c_state)
             IDLE: begin
-                if (frame_done) begin
+                if ((frame_done /* && one_red_undetected */) || bunker_detected) begin
                     for (int i = 0; i < 15; i++) begin
                         n_score[i] = 16;
                         n_valid[i] = 1;
+                        if (bunker_detected) begin
+                            n_hit_count[i] = 0;
+                        end
                     end
-                    n_hint_count_reg = hint_count;
+                    if (!bunker_detected) begin
+                        n_hit_count[c_max_index] = n_hit_count[c_max_index] + 1;
+                    end
                     n_clk_count = 0;
-                end else if (~bunker_detected & data_done) begin // 벙커는 아니고 도형 식별
+                end else if (~bunker_detected && data_done && one_red_undetected) begin // 벙커는 아니고 도형 식별
                     n_state = RECEIVE_DATA;
                     n_clk_count = 0;
+                    n_hint_data_reg = hint_data;
                 end
             end
 
             RECEIVE_DATA: begin
+
                 case (color)
-                    `GREEN: distance = 1;
-                    `BLUE:  distance = 3;
-                    `RED:   distance = 4;
+                    `GREEN:  distance = 2;
+                    `BLUE:   distance = 2;
+                    default: distance = 2;
                 endcase
 
-                case (shape)
-                    `CIRCLE: begin
+                case (color)
+                    `GREEN: begin
                         for (int i = 0; i < 15; i++) begin
                             if (manhattan(section, i) <= distance) begin
                                 if (c_valid[i]) begin
@@ -225,7 +239,7 @@ module target_select (
                             end
                         end
                     end
-                    `TRIANGLE: begin
+                    `BLUE: begin
                         for (int i = 0; i < 15; i++) begin
                             if (manhattan(section, i) > distance) begin
                                 if (c_valid[i]) begin
@@ -234,6 +248,11 @@ module target_select (
                             end else begin
                                 n_valid[i] = 0;
                             end
+
+                            if (c_hit_count[i] == 2) begin
+                                n_valid[i] = 0;
+                            end
+
                         end
 
                     end
@@ -265,8 +284,6 @@ module target_select (
                 end
             end
         end
-
-
     end
 
 endmodule
