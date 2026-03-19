@@ -68,6 +68,7 @@ module top_VGA_ov7670_f (
 
     logic [7:0] hint_pc_tx_mux_out1;
     logic [7:0] hint_pc_tx_mux_out2;
+    logic [7:0] hint_pc_tx_mux_out3;
 
     logic [7:0] UI_pc_rx_data;
     logic       UI_pc_rx_done;
@@ -372,9 +373,18 @@ module top_VGA_ov7670_f (
     mux_nx1 #(
         .NUM  (2),
         .WIDTH(8)
+    ) PC_hint_tx_fifo_src_mux3 (
+        .sel(signal_data),
+        .x  ({hint_pc_tx_mux_out1, {4'b1111, hint_data[3:0]}}),
+        .y  (hint_pc_tx_mux_out3)
+    );
+
+    mux_nx1 #(
+        .NUM  (2),
+        .WIDTH(8)
     ) PC_hint_tx_fifo_src_mux2 (
         .sel(o_mode_btn),
-        .x  ({hint_pc_tx_mux_out1, btn_send_data}),
+        .x  ({hint_pc_tx_mux_out3, btn_send_data}),
         .y  (hint_pc_tx_mux_out2)
     );
 
